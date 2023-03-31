@@ -20,7 +20,7 @@ module.exports.getUserId = (req, res) => {
   User.findById(userId)
     .then((user) => {
       if (user) { return res.status(200).send({ data: user }); }
-      return res.status(400).send({ message: 'Пользователь не найден' });
+      return res.status(404).send({ message: 'Пользователь не найден' });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -53,7 +53,10 @@ module.exports.updateUser = (req, res) => {
   const { userId } = req.user._id;
   const { name, about } = req.body;
 
-  User.findByIdAndUpdate(userId, { name, about })
+  User.findByIdAndUpdate(userId, { name, about }, {
+    new: true,
+    runValidators: true,
+  })
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err.name === 'CastError') {
