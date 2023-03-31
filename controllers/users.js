@@ -1,9 +1,14 @@
 const User = require('../models/user');
+const {
+  ERROR_400,
+  ERROR_404,
+  ERROR_500,
+} = require('../errors/errors');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((user) => res.send({ data: user }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(ERROR_500).send({ message: 'Произошла ошибка' }));
 };
 
 module.exports.getUserId = (req, res) => {
@@ -12,13 +17,13 @@ module.exports.getUserId = (req, res) => {
   User.findById(userId)
     .then((user) => {
       if (user) { return res.status(200).send({ data: user }); }
-      return res.status(404).send({ message: 'Пользователь не найден' });
+      return res.status(ERROR_404).send({ message: 'Пользователь не найден' });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Невалидный идентификатор' });
+        res.status(ERROR_400).send({ message: 'Невалидный идентификатор' });
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        res.status(ERROR_500).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -30,9 +35,9 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Невалидный идентификатор' });
+        res.status(ERROR_400).send({ message: 'Невалидный идентификатор' });
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        res.status(ERROR_500).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -48,9 +53,9 @@ module.exports.updateUser = (req, res) => {
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Невалидный идентификатор' });
+        res.status(ERROR_400).send({ message: 'Невалидный идентификатор' });
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        res.status(ERROR_500).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -66,9 +71,9 @@ module.exports.updateAvatar = (req, res) => {
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Невалидный идентификатор' });
+        res.status(ERROR_400).send({ message: 'Невалидный идентификатор' });
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        res.status(ERROR_500).send({ message: 'Произошла ошибка' });
       }
     });
 };
