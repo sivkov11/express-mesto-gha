@@ -19,7 +19,9 @@ module.exports.getUserId = (req, res) => {
 
   User.find(userId)
     .then((user) => {
-      if (user) res.send({ data: user });
+      if (user) { res.status(200).send({ data: user }); } else {
+        res.status(400).send({ message: 'Пользователь не найден' });
+      }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -49,7 +51,7 @@ module.exports.createUser = (req, res) => {
 };
 
 module.exports.updateUser = (req, res) => {
-  const userId = req.params;
+  const { userId } = req.params;
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(userId, { name, about })
@@ -66,7 +68,7 @@ module.exports.updateUser = (req, res) => {
 };
 
 module.exports.updateAvatar = (req, res) => {
-  const userId = req.params;
+  const { userId } = req.params;
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(userId, { avatar })
