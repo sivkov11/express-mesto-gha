@@ -51,7 +51,7 @@ module.exports.createUser = (req, res) => {
 };
 
 module.exports.updateUser = (req, res) => {
-  const { userId } = req.params;
+  const { userId } = req.user._id;
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(userId, { name, about })
@@ -68,7 +68,7 @@ module.exports.updateUser = (req, res) => {
 };
 
 module.exports.updateAvatar = (req, res) => {
-  const { userId } = req.params;
+  const { userId } = req.user._id;
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(userId, { avatar })

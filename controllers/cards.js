@@ -15,7 +15,7 @@ module.exports.getCards = (req, res) => {
 };
 
 module.exports.createCard = (req, res) => {
-  const userId = req.user._id;
+  const { userId } = req.user._id;
   const { name, link } = req.body;
 
   Card.create({ name, link, owner: userId })
@@ -32,7 +32,7 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  const cardId = req.params;
+  const { cardId } = req.params;
   Card.findByIdAndRemove(cardId)
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
@@ -48,7 +48,7 @@ module.exports.deleteCard = (req, res) => {
 
 module.exports.likeCard = (req, res) => {
   const { cardId } = req.params;
-  const userId = req.user._id;
+  const { userId } = req.user._id;
 
   Card.findByIdAndUpdate(
     cardId,
@@ -71,7 +71,7 @@ module.exports.likeCard = (req, res) => {
 
 module.exports.dislikeCard = (req, res) => {
   const { cardId } = req.params;
-  const userId = req.user._id;
+  const { userId } = req.user._id;
 
   Card.findByIdAndUpdate(
     cardId,
