@@ -17,7 +17,7 @@ module.exports.getUsers = (req, res) => {
 module.exports.getUserId = (req, res) => {
   const { userId } = req.params;
 
-  User.find(userId)
+  User.findById(userId)
     .then((user) => {
       if (user) { return res.status(200).send({ data: user }); }
       return res.status(400).send({ message: 'Пользователь не найден' });
