@@ -58,11 +58,11 @@ module.exports.updateUser = (req, res) => {
     runValidators: true,
   })
     .then((user) => {
-      if (user) { res.status(200).send({ data: user }); }
+      if (user) { return res.status(200).send({ data: user }); }
       return res.status(404).send({ message: 'Пользователь не найден' });
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Невалидный идентификатор' });
       } else if (err.statusCode === 404) {
         res.status(404).send({ message: err.message });
@@ -76,7 +76,10 @@ module.exports.updateAvatar = (req, res) => {
   const { userId } = req.user._id;
   const { avatar } = req.body;
 
-  User.findByIdAndUpdate(userId, { avatar })
+  User.findByIdAndUpdate(userId, { avatar }, {
+    new: true,
+    runValidators: true,
+  })
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
