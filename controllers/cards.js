@@ -4,7 +4,7 @@ module.exports.getCards = (req, res) => {
   Card.find({})
     .then((card) => res.send({ data: card }))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Невалидный идентификатор' });
       } else if (err.statusCode === 404) {
         res.status(404).send({ message: err.message });
@@ -21,7 +21,7 @@ module.exports.createCard = (req, res) => {
   Card.create({ name, link, owner: userId })
     .then((card) => res.send({ data: card }))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Невалидный идентификатор' });
       } else if (err.statusCode === 404) {
         res.status(404).send({ message: err.message });
@@ -36,7 +36,7 @@ module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(cardId)
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Невалидный идентификатор' });
       } else if (err.statusCode === 404) {
         res.status(404).send({ message: err.message });
@@ -59,7 +59,7 @@ module.exports.likeCard = (req, res) => {
   )
     .then((card) => res.status(200).send({ data: card, message: 'like' }))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Невалидный идентификатор' });
       } else if (err.statusCode === 404) {
         res.status(404).send({ message: err.message });
@@ -82,7 +82,7 @@ module.exports.dislikeCard = (req, res) => {
   )
     .then((card) => res.status(200).send({ data: card, message: 'unlike' }))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Невалидный идентификатор' });
       } else if (err.statusCode === 404) {
         res.status(404).send({ message: err.message });
