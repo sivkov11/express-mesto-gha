@@ -57,7 +57,7 @@ module.exports.updateUser = (req, res) => {
     new: true,
     runValidators: true,
   })
-    .then((user) => { res.status(200).send({ data: user }); })
+    .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Невалидный идентификатор' });
@@ -73,7 +73,7 @@ module.exports.updateAvatar = (req, res) => {
   const { userId } = req.user._id;
   const { avatar } = req.body;
 
-  User.findByIdAndUpdate(userId, { avatar }, {
+  User.findByIdAndUpdate(userId, avatar, {
     new: true,
     runValidators: true,
   })
