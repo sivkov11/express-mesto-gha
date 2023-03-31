@@ -36,7 +36,7 @@ module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(cardId)
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         res.status(400).send({ message: 'Невалидный идентификатор' });
       } else if (err.statusCode === 404) {
         res.status(404).send({ message: err.message });
@@ -80,9 +80,9 @@ module.exports.dislikeCard = (req, res) => {
     },
     { new: true },
   )
-    .then((card) => res.status(200).send({ data: card, message: 'unlike' }))
+    .then((card) => res.status(200).send({ data: card, message: 'dislike' }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         res.status(400).send({ message: 'Невалидный идентификатор' });
       } else if (err.statusCode === 404) {
         res.status(404).send({ message: err.message });
