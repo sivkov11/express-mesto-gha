@@ -58,7 +58,7 @@ module.exports.likeCard = (req, res) => {
     { new: true },
   )
     .then((card) => {
-      if (card) { return res.status(200).send({ data: card, message: 'like' }) }
+      if (card) { return res.status(200).send({ data: card, message: 'like' }); }
       return res.status(404).send({ message: 'Карточка не найдена' });
     })
     .catch((err) => {
