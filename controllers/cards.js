@@ -11,7 +11,7 @@ module.exports.getCards = (req, res) => {
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
       }
-    })
+    });
 };
 
 module.exports.createCard = (req, res) => {
@@ -28,7 +28,7 @@ module.exports.createCard = (req, res) => {
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
       }
-    })
+    });
 };
 
 module.exports.deleteCard = (req, res) => {
@@ -43,11 +43,11 @@ module.exports.deleteCard = (req, res) => {
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
       }
-    })
+    });
 };
 
 module.exports.likeCard = (req, res) => {
-  const cardId = req.params.cardId;
+  const { cardId } = req.params;
   const userId = req.user._id;
 
   Card.findByIdAndUpdate(
@@ -55,7 +55,7 @@ module.exports.likeCard = (req, res) => {
     {
       $addToSet: { likes: userId },
     },
-    { new: true }
+    { new: true },
   )
     .then((card) => res.status(200).send({ data: card, message: 'like' }))
     .catch((err) => {
@@ -66,11 +66,11 @@ module.exports.likeCard = (req, res) => {
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
       }
-    })
+    });
 };
 
 module.exports.dislikeCard = (req, res) => {
-  const cardId = req.params.cardId;
+  const { cardId } = req.params;
   const userId = req.user._id;
 
   Card.findByIdAndUpdate(
@@ -78,7 +78,7 @@ module.exports.dislikeCard = (req, res) => {
     {
       $pull: { likes: userId },
     },
-    { new: true }
+    { new: true },
   )
     .then((card) => res.status(200).send({ data: card, message: 'unlike' }))
     .catch((err) => {
@@ -89,5 +89,5 @@ module.exports.dislikeCard = (req, res) => {
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
       }
-    })
+    });
 };

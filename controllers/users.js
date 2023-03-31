@@ -11,7 +11,7 @@ module.exports.getUsers = (req, res) => {
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
       }
-    })
+    });
 };
 
 module.exports.getUserId = (req, res) => {
@@ -27,7 +27,7 @@ module.exports.getUserId = (req, res) => {
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
       }
-    })
+    });
 };
 
 module.exports.createUser = (req, res) => {
@@ -43,7 +43,7 @@ module.exports.createUser = (req, res) => {
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
       }
-    })
+    });
 };
 
 module.exports.updateUser = (req, res) => {
@@ -60,7 +60,7 @@ module.exports.updateUser = (req, res) => {
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
       }
-    })
+    });
 };
 
 module.exports.updateAvatar = (req, res) => {
@@ -77,5 +77,5 @@ module.exports.updateAvatar = (req, res) => {
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
       }
-    })
+    });
 };
