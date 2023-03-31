@@ -34,7 +34,10 @@ module.exports.createCard = (req, res) => {
 module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params;
   Card.findByIdAndRemove(cardId)
-    .then((card) => res.status(200).send({ data: card }))
+    .then((card) => {
+      if (card) { return res.status(200).send({ data: card, message: 'like' }); }
+      return res.status(404).send({ message: 'Карточка не найдена' });
+    })
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Невалидный идентификатор' });
