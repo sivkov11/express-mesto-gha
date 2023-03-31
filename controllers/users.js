@@ -57,7 +57,10 @@ module.exports.updateUser = (req, res) => {
     new: true,
     runValidators: true,
   })
-    .then((user) => res.status(200).send({ data: user }))
+    .then((user) => {
+      if (user) { return res.status(200).send({ data: user }); }
+      return res.status(404).send({ message: 'Пользователь не найден' });
+    })
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Невалидный идентификатор' });
