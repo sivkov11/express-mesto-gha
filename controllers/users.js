@@ -58,7 +58,7 @@ module.exports.updateUser = (req, res) => {
     runValidators: true,
   })
     .then((user) => {
-      if (user) { return res.status(200).send({ data: user }); }
+      if (user) { res.status(200).send({ data: user }); }
       return res.status(404).send({ message: 'Пользователь не найден' });
     })
     .catch((err) => {
