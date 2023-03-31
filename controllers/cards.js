@@ -59,10 +59,10 @@ module.exports.likeCard = (req, res) => {
   )
     .then((card) => {
       if (card) { return res.status(200).send({ data: card, message: 'like' }); }
-      return res.status(400).send({ message: 'Карточка не найдена' });
+      return res.status(404).send({ message: 'Карточка не найдена' });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         res.status(400).send({ message: 'Невалидный идентификатор' });
       } else if (err.statusCode === 404) {
         res.status(404).send({ message: err.message });
@@ -85,7 +85,7 @@ module.exports.dislikeCard = (req, res) => {
   )
     .then((card) => {
       if (card) { return res.status(200).send({ data: card, message: 'dislike' }); }
-      return res.status(400).send({ message: 'Карточка не найдена' });
+      return res.status(404).send({ message: 'Карточка не найдена' });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
