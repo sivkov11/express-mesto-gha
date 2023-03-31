@@ -6,6 +6,9 @@ const routeCards = require('./routes/cards');
 
 const app = express();
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use((req, res, next) => {
   req.user = {
     _id: '642410d423858e0dce38e32a',
@@ -13,8 +16,6 @@ app.use((req, res, next) => {
 
   next();
 });
-
-app.use(bodyParser.json());
 
 app.use('/users', routeUsers);
 app.use('/cards', routeCards);
