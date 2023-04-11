@@ -92,7 +92,7 @@ module.exports.updateAvatar = (req, res) => {
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-  let userId;
+  let id;
 
   User.findOne({ email }).select('+password')
     .then((user) => {
@@ -100,7 +100,7 @@ module.exports.login = (req, res, next) => {
         next(new UnauthorizedError('Неправильные почта или пароль'));
       }
 
-      userId = user._id;
+      id = user._id;
 
       return bcrypt.compare(password, user.password);
     })
@@ -109,7 +109,7 @@ module.exports.login = (req, res, next) => {
         next(new UnauthorizedError('Неправильные почта или пароль'));
       }
 
-      const token = jwt.sign({ _id: userId }, 'super-strong-secret', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: id }, 'super-strong-secret', { expiresIn: '7d' });
 
       res.cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
