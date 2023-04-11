@@ -2,22 +2,22 @@ const jwt = require('jsonwebtoken');
 const UnauthorizedError = require('../errors/unauthorized-error');
 
 module.exports = (req, res, next) => {
-  const token = req.cookies.jwt;
+  const { authorization } = req.headers;
 
-  if (!token) {
-    throw new UnauthorizedError();
+  if (!authorization || !authorization.startsWith('Bearer ')) {
+    return next(new UnauthorizedError('Неправильные почта или пароль'));
   }
 
+  const token = authorization.replace('Bearer ', '');
   let payload;
 
   try {
     payload = jwt.verify(token, 'super-strong-secret');
   } catch (err) {
-    throw new UnauthorizedError();
+    return next(new UnauthorizedError('Неправильные почта или пароль'));
   }
 
   req.user = payload;
 
-  next();
-  return null;
+  return next();
 };
