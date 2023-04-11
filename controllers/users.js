@@ -98,7 +98,7 @@ module.exports.login = (req, res) => {
       if (!user) {
         return Promise.reject(new Error('Что-то не так с почтой или паролем'));
       }
-      const token = jwt.sign({ _id: user._id }, '642410d423858e0dce38e32a', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, 'super-strong-secret', { expiresIn: '7d' });
       res
         .cookie('jwt', token, {
           maxAge: 3600000 * 24 * 7,
