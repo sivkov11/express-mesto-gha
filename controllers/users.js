@@ -7,8 +7,8 @@ const {
   ERROR_404,
   ERROR_500,
 } = require('../errors/errors');
-const NotFoundError = require('../errors/not-found-error')
-const ConflictError = require('../errors/conflict-error')
+const NotFoundError = require('../errors/not-found-error');
+const ConflictError = require('../errors/conflict-error');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -46,11 +46,11 @@ module.exports.createUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new NotFoundError('Некорректные данные'));
-        return
+        return;
       } if (err.code === 11000) {
-        next(new ConflictError);
+        next(new ConflictError());
       }
-      next(err)
+      next(err);
     });
 };
 

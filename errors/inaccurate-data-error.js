@@ -1,4 +1,4 @@
-const { ERROR_400 } = require('../errors/errors')
+const { ERROR_400 } = require('./errors');
 
 class InaccurateDataError extends Error {
   constructor(message) {
