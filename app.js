@@ -15,7 +15,7 @@ app.use(express.json());
 app.post('/signin', login);
 app.post('/signup', createUser);
 
-// app.use(auth);
+app.use(auth);
 
 app.use('/users', routeUsers);
 app.use('/cards', routeCards);
