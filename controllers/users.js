@@ -7,6 +7,8 @@ const {
   ERROR_404,
   ERROR_500,
 } = require('../errors/errors');
+const NotFoundError = require('../errors/not-found-error')
+const ConflictError = require('../errors/conflict-error')
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -31,7 +33,7 @@ module.exports.getUserId = (req, res) => {
     });
 };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
@@ -43,10 +45,12 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(ERROR_400).send({ message: 'Невалидный идентификатор' });
-      } else {
-        res.status(ERROR_500).send({ message: 'Произошла ошибка' });
+        next(new NotFoundError('Некорректные данные'));
+        return
+      } if (err.code === 11000) {
+        next(new ConflictError);
       }
+      next(err)
     });
 };
 
