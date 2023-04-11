@@ -3,12 +3,12 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const {
   ERROR_400,
-  ERROR_401,
   ERROR_404,
   ERROR_500,
 } = require('../errors/errors');
 const NotFoundError = require('../errors/not-found-error');
 const ConflictError = require('../errors/conflict-error');
+const UnauthorizedError = require('../errors/unauthorized-error');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -90,36 +90,36 @@ module.exports.updateAvatar = (req, res) => {
     });
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
+  let id;
 
   User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new Error('Что-то не так с почтой или паролем'));
+        next(new UnauthorizedError('Неправильные почта или пароль'));
       }
-      const token = jwt.sign({ _id: user._id }, 'super-strong-secret', { expiresIn: '7d' });
-      res
-        .cookie('jwt', token, {
-          maxAge: 3600000 * 24 * 7,
-          httpOnly: true,
-        })
-        .end();
+
+      id = user._id;
+
       return bcrypt.compare(password, user.password);
     })
     .then((matched) => {
       if (!matched) {
-        Promise.reject(new Error('Неправильные почта или пароль'));
+        next(new UnauthorizedError('Неправильные почта или пароль'));
       }
 
-      res.send({ message: 'Всё верно!' });
+      const token = jwt.sign({ _id: id }, 'super-strong-secret', { expiresIn: '7d' });
+
+      res.cookie('jwt', token, {
+        maxAge: 3600000 * 24 * 7,
+        httpOnly: true,
+      });
+
+      return res.send({ message: 'Всё верно!' });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(ERROR_401).send({ message: 'Неправильные почта или пароль' });
-      } else {
-        res.status(ERROR_500).send({ message: 'Произошла ошибка' });
-      }
+      next(err);
     });
 };
 
