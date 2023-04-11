@@ -12,10 +12,11 @@ const app = express();
 
 app.use(express.json());
 
+app.use(auth);
+
 app.post('/signin', login);
 app.post('/signup', createUser);
 
-app.use(auth);
 app.use('/users', routeUsers);
 app.use('/cards', routeCards);
 app.use((req, res) => {
