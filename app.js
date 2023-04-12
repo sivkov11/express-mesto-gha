@@ -9,8 +9,6 @@ const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/errorHandler');
 const NotFoundError = require('./errors/not-found-error');
 
-const { MONGOOSE_ENV = 'mongodb://localhost:27017/mestodb' } = process.env;
-
 const app = express();
 
 app.use(express.json());
@@ -46,6 +44,6 @@ app.use(errorHandler);
 
 const { PORT = 3000 } = process.env;
 
-mongoose.connect(MONGOOSE_ENV);
+mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.listen(PORT);
