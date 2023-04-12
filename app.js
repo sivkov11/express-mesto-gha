@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const { celebrate, Joi } = require('celebrate');
+const { errors } = require('celebrate');
 const routeUsers = require('./routes/users');
 const routeCards = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
@@ -42,6 +43,7 @@ app.use((req, res) => {
 });
 
 app.use(errorHandler);
+app.use(errors);
 
 const { PORT = 3000 } = process.env;
 
