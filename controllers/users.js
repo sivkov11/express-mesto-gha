@@ -10,29 +10,6 @@ const UnauthorizedError = require('../errors/unauthorized-error');
 const InaccurateDataError = require('../errors/inaccurate-data-error');
 const NotFoundError = require('../errors/not-found-error');
 
-const secretKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDM2OWJjZmU0NzAwOGJhYmJmOTc3Y2IiLCJpYXQiOjE2ODEzMDA0NDUsImV4cCI6MTY4MTkwNTI0NX0.p1RozlX8_j5rXTb2Ck7KZKE-PJvKqYSgvxiamRmHvV0';
-
-module.exports.getUsers = (req, res) => {
-  User.find({})
-    .then((user) => res.send({ data: user }))
-    .catch(() => res.status(ERROR_500).send({ message: 'Произошла ошибка' }));
-};
-
-module.exports.getUserId = (req, res, next) => {
-  const { userId } = req.params;
-
-  User.findById(userId)
-    .then((user) => {
-      if (user) { return res.status(200).send({ data: user }); }
-      return next(new NotFoundError('Пользователь не найден'));
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new InaccurateDataError('Некорректные данные'));
-      }
-    });
-};
-
 module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
@@ -79,7 +56,7 @@ module.exports.login = (req, res, next) => {
         return Promise.reject(new UnauthorizedError('Неправильные почта или пароль'));
       }
 
-      const token = jwt.sign({ _id: userId }, secretKey, { expiresIn: '7d' });
+      const token = jwt.sign({ _id: userId }, 'secretKey', { expiresIn: '7d' });
 
       res.cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
@@ -90,6 +67,27 @@ module.exports.login = (req, res, next) => {
     })
     .catch((err) => {
       next(err);
+    });
+};
+
+module.exports.getUsers = (req, res) => {
+  User.find({})
+    .then((user) => res.send({ data: user }))
+    .catch(() => res.status(ERROR_500).send({ message: 'Произошла ошибка' }));
+};
+
+module.exports.getUserId = (req, res, next) => {
+  const { userId } = req.params;
+
+  User.findById(userId)
+    .then((user) => {
+      if (user) { return res.status(200).send({ data: user }); }
+      return next(new NotFoundError('Пользователь не найден'));
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new InaccurateDataError('Некорректные данные'));
+      }
     });
 };
 
