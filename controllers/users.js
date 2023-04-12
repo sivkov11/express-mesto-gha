@@ -131,7 +131,7 @@ module.exports.getCurrentUser = (req, res, next) => {
   const { id } = req.user;
   User.findById(id)
     .then((user) => {
-      res.status(200).send({ user });
+      res.status(200).send({ data: user });
     })
     .catch(next);
 };
