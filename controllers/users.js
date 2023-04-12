@@ -3,12 +3,12 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const {
   ERROR_400,
-  ERROR_404,
   ERROR_500,
 } = require('../errors/errors');
 const ConflictError = require('../errors/conflict-error');
 const UnauthorizedError = require('../errors/unauthorized-error');
 const InaccurateDataError = require('../errors/inaccurate-data-error');
+const NotFoundError = require('../errors/not-found-error');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -16,19 +16,17 @@ module.exports.getUsers = (req, res) => {
     .catch(() => res.status(ERROR_500).send({ message: 'Произошла ошибка' }));
 };
 
-module.exports.getUserId = (req, res) => {
+module.exports.getUserId = (req, res, next) => {
   const { userId } = req.params;
 
   User.findById(userId)
     .then((user) => {
       if (user) { return res.status(200).send({ data: user }); }
-      return res.status(ERROR_404).send({ message: 'Пользователь не найден' });
+      next(new NotFoundError('Пользователь не найден'));
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(ERROR_400).send({ message: 'Невалидный идентификатор' });
-      } else {
-        res.status(ERROR_500).send({ message: 'Произошла ошибка' });
+        next(new InaccurateDataError('Некорректные данные'));
       }
     });
 };
