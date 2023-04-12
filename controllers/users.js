@@ -52,12 +52,11 @@ module.exports.createUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new InaccurateDataError('Некорректные данные'));
-        return;
-      } if (err.code === 11000) {
-        next(new ConflictError());
-        return;
+      } else if (err.code === 11000) {
+        next(new ConflictError('Пользователь с таким email уже зарегистрирован'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
