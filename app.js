@@ -4,6 +4,7 @@ const routeUsers = require('./routes/users');
 const routeCards = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
+const errorHandler = require('./middlewares/errorHandler');
 const {
   ERROR_404,
 } = require('./errors/errors');
@@ -22,6 +23,8 @@ app.use('/cards', routeCards);
 app.use((req, res) => {
   res.status(ERROR_404).send({ message: 'Страница не найдена' });
 });
+
+app.use(errorHandler);
 
 const { PORT = 3000 } = process.env;
 
