@@ -22,7 +22,7 @@ module.exports.getUserId = (req, res, next) => {
   User.findById(userId)
     .then((user) => {
       if (user) { return res.status(200).send({ data: user }); }
-      next(new NotFoundError('Пользователь не найден'));
+      return next(new NotFoundError('Пользователь не найден'));
     })
     .catch((err) => {
       if (err.name === 'CastError') {
