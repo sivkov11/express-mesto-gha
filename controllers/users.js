@@ -45,7 +45,8 @@ module.exports.createUser = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new NotFoundError('Некорректные данные'));
+        next(new NotFoundError('Некорректные данные'));
+        return;
       } if (err.code === 11000) {
         next(new ConflictError());
       }

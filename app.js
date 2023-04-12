@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const { celebrate, Joi } = require('celebrate');
 const routeUsers = require('./routes/users');
 const routeCards = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
@@ -8,7 +9,6 @@ const errorHandler = require('./middlewares/errorHandler');
 const {
   ERROR_404,
 } = require('./errors/errors');
-const {celebrate, Joi} = require("celebrate");
 
 const urlRegex = /^(https?:\/\/)(www\.)?([a-z1-9-]{2,}\.)+[a-z]{2,}\/?[a-z0-9-._~:/?#[\]@!$&'()*+,;=]*/i;
 
