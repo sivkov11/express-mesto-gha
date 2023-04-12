@@ -7,11 +7,7 @@ const routeCards = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/errorHandler');
-const {
-  ERROR_404,
-} = require('./errors/errors');
-
-const urlRegex = /^(https?:\/\/)(www\.)?([a-z1-9-]{2,}\.)+[a-z]{2,}\/?[a-z0-9-._~:/?#[\]@!$&'()*+,;=]*/i;
+const NotFoundError = require('./errors/not-found-error');
 
 const app = express();
 
@@ -30,7 +26,7 @@ app.post('/signup', celebrate({
     password: Joi.string().required(),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().uri().regex(urlRegex),
+    avatar: Joi.string().uri().regex(/^(https?:\/\/)(www\.)?([a-z1-9-]{2,}\.)+[a-z]{2,}\/?[a-z0-9-._~:/?#[\]@!$&'()*+,;=]*/i),
   }),
 }), createUser);
 
@@ -38,8 +34,9 @@ app.use(auth);
 
 app.use('/users', routeUsers);
 app.use('/cards', routeCards);
-app.use((req, res) => {
-  res.status(ERROR_404).send({ message: 'Страница не найдена' });
+
+app.use((req, res, next) => {
+  next(new NotFoundError('Страница не найдена'));
 });
 
 app.use(errors());
