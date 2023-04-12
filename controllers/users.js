@@ -54,6 +54,39 @@ module.exports.createUser = (req, res, next) => {
     });
 };
 
+module.exports.login = (req, res, next) => {
+  const { email, password } = req.body;
+  let userId;
+
+  User.findOne({ email }).select('+password')
+    .then((user) => {
+      if (!user) {
+        return Promise.reject(new UnauthorizedError('Неправильные почта или пароль'));
+      }
+
+      userId = user._id;
+
+      return bcrypt.compare(password, user.password);
+    })
+    .then((matched) => {
+      if (!matched) {
+        return Promise.reject(new UnauthorizedError('Неправильные почта или пароль'));
+      }
+
+      const token = jwt.sign({ _id: userId }, 'super-strong-secret', { expiresIn: '7d' });
+
+      res.cookie('jwt', token, {
+        maxAge: 3600000 * 24 * 7,
+        httpOnly: true,
+      });
+
+      return res.send({ message: 'Всё верно!' });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
 module.exports.updateUser = (req, res) => {
   const { userId } = req.user._id;
   const { name, about } = req.body;
@@ -88,46 +121,4 @@ module.exports.updateAvatar = (req, res) => {
         res.status(ERROR_500).send({ message: 'Произошла ошибка' });
       }
     });
-};
-
-module.exports.login = (req, res, next) => {
-  const { email, password } = req.body;
-  let userId;
-
-  User.findOne({ email }).select('+password')
-    .then((user) => {
-      if (!user) {
-        next(new UnauthorizedError('Неправильные почта или пароль'));
-      }
-
-      userId = user._id;
-
-      return bcrypt.compare(password, user.password);
-    })
-    .then((matched) => {
-      if (!matched) {
-        next(new UnauthorizedError('Неправильные почта или пароль'));
-      }
-
-      const token = jwt.sign({ _id: userId }, 'super-strong-secret', { expiresIn: '7d' });
-
-      res.cookie('jwt', token, {
-        maxAge: 3600000 * 24 * 7,
-        httpOnly: true,
-      });
-
-      return res.send({ message: 'Всё верно!' });
-    })
-    .catch((err) => {
-      next(err);
-    });
-};
-
-module.exports.getCurrentUser = (req, res, next) => {
-  const { _id } = req.user;
-  User.findById(_id)
-    .then((user) => {
-      res.send({ user });
-    })
-    .catch(next);
 };
