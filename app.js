@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const { celebrate, Joi } = require('celebrate');
+const { errors } = require('celebrate');
 const routeUsers = require('./routes/users');
 const routeCards = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
@@ -41,6 +42,7 @@ app.use((req, res) => {
   res.status(ERROR_404).send({ message: 'Страница не найдена' });
 });
 
+app.use(errors());
 app.use(errorHandler);
 
 const { PORT = 3000 } = process.env;
