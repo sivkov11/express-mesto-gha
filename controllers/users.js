@@ -61,7 +61,7 @@ module.exports.login = (req, res, next) => {
   User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new UnauthorizedError('Неправильные почта или пароль'));
+        return Promise.reject(new UnauthorizedError('Неправильные почта или пароль111'));
       }
 
       userId = user._id;
@@ -70,7 +70,7 @@ module.exports.login = (req, res, next) => {
     })
     .then((matched) => {
       if (!matched) {
-        return Promise.reject(new UnauthorizedError('Неправильные почта или пароль'));
+        return Promise.reject(new UnauthorizedError('Неправильные почта или пароль222'));
       }
 
       const token = jwt.sign({ _id: userId }, 'super-strong-secret', { expiresIn: '7d' });
