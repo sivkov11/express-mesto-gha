@@ -60,9 +60,7 @@ module.exports.login = (req, res, next) => {
 
       return res.status(200).send({ _id: token });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 module.exports.getUsers = (req, res) => {
@@ -127,7 +125,7 @@ module.exports.getCurrentUser = (req, res, next) => {
 
   User.findById(id)
     .then((user) => {
-      res.status(200).send({ user });
+      res.status(200).send({ data: user });
     })
     .catch(next);
 };
