@@ -126,3 +126,12 @@ module.exports.updateAvatar = (req, res) => {
       }
     });
 };
+
+module.exports.getCurrentUser = (req, res, next) => {
+  const { id } = req.user;
+  User.findById(id)
+    .then((user) => {
+      res.status(200).send({ user });
+    })
+    .catch(next);
+};
