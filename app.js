@@ -14,6 +14,7 @@ const {
 const urlRegex = /^(https?:\/\/)(www\.)?([a-z1-9-]{2,}\.)+[a-z]{2,}\/?[a-z0-9-._~:/?#[\]@!$&'()*+,;=]*/i;
 
 const app = express();
+app.use(errors);
 
 app.use(express.json());
 
@@ -43,7 +44,6 @@ app.use((req, res) => {
 });
 
 app.use(errorHandler);
-app.use(errors);
 
 const { PORT = 3000 } = process.env;
 
