@@ -10,6 +10,8 @@ const UnauthorizedError = require('../errors/unauthorized-error');
 const InaccurateDataError = require('../errors/inaccurate-data-error');
 const NotFoundError = require('../errors/not-found-error');
 
+const { jwtKey = 'super-strong-secret' } = process.env;
+
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((user) => res.send({ data: user }))
@@ -77,7 +79,7 @@ module.exports.login = (req, res, next) => {
         return Promise.reject(new UnauthorizedError('Неправильные почта или пароль'));
       }
 
-      const token = jwt.sign({ _id: userId }, 'super-strong-secret', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: userId }, jwtKey, { expiresIn: '7d' });
 
       res.cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
