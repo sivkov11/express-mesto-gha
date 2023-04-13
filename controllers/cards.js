@@ -25,18 +25,27 @@ module.exports.createCard = (req, res, next) => {
 };
 
 module.exports.deleteCard = (req, res, next) => {
-  Card.findById(req.params.cardId)
+  const { cardId } = req.params;
+  const ownerId = req.user._id;
+
+  Card.findById(cardId)
     .then((card) => {
       if (card === null) {
-        next(new NotFoundError('Карточка не найдена.'));
-      } else if (card.owner._id.toString() === req.user._id) {
-        Card.deleteOne()
-          .then(() => {
-            res.send({ data: card });
-          });
-      } else {
-        next(new ForbiddenError('Это не ваша карточка!'));
+        throw new NotFoundError('Картачка не найдена');
       }
+      if (card.owner.toString() !== ownerId) {
+        throw new ForbiddenError();
+      }
+      return card;
+    })
+    .then((card) => Card.deleteOne(card))
+    .then((card) => res.status(200).send({ card }))
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new NotFoundError('Картачка не найдена'));
+        return;
+      }
+      next(err);
     });
 };
 
