@@ -1,10 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const {
-  ERROR_400,
-  ERROR_500,
-} = require('../errors/errors');
 const ConflictError = require('../errors/conflict-error');
 const InaccurateDataError = require('../errors/inaccurate-data-error');
 const NotFoundError = require('../errors/not-found-error');
@@ -66,8 +62,7 @@ module.exports.getCurrentUser = (req, res, next) => {
 
 module.exports.getUsers = (req, res) => {
   User.find({})
-    .then((user) => res.send({ data: user }))
-    .catch(() => res.status(ERROR_500).send({ message: 'Произошла ошибка' }));
+    .then((user) => res.send({ data: user }));
 };
 
 module.exports.getUserId = (req, res, next) => {
@@ -101,20 +96,18 @@ module.exports.updateUser = (req, res, next) => {
     });
 };
 
-module.exports.updateAvatar = (req, res) => {
-  const { userId } = req.user._id;
+module.exports.updateAvatar = (req, res, next) => {
+  const { _id } = req.user;
   const { avatar } = req.body;
 
-  User.findByIdAndUpdate(userId, { avatar }, {
+  User.findByIdAndUpdate(_id, { avatar }, {
     new: true,
     runValidators: true,
   })
-    .then((user) => res.status(200).send({ data: user }))
+    .then((user) => res.status(200).send({ user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(ERROR_400).send({ message: 'Невалидный идентификатор' });
-      } else {
-        res.status(ERROR_500).send({ message: 'Произошла ошибка' });
+        next(new InaccurateDataError('Некорректные данные'));
       }
     });
 };
