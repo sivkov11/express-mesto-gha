@@ -34,14 +34,8 @@ module.exports.deleteCard = (req, res, next) => {
         next(new ForbiddenError('Это чужая карточка'));
       }
       return Card.findByIdAndRemove(req.params.cardId)
-        .then((del) => res.send({ data: del }));
-    }).catch((err) => {
-      if (err.name === 'CastError') {
-        next(new NotFoundError('Картачка не найдена'));
-        return;
-      }
-      next(err);
-    });
+        .then((cardDelete) => res.send({ data: cardDelete }));
+    }).catch(next);
 };
 
 module.exports.likeCard = (req, res, next) => {
