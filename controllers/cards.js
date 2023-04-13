@@ -27,7 +27,7 @@ module.exports.createCard = (req, res, next) => {
 module.exports.deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
     .then((card) => {
-      if (card === null) {
+      if (card == null) {
         next(new NotFoundError('Картачка не найдена'));
       }
       if (card.owner._id.toString() !== req.user._id) {
