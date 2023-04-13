@@ -6,7 +6,6 @@ const {
   ERROR_500,
 } = require('../errors/errors');
 const ConflictError = require('../errors/conflict-error');
-const UnauthorizedError = require('../errors/unauthorized-error');
 const InaccurateDataError = require('../errors/inaccurate-data-error');
 const NotFoundError = require('../errors/not-found-error');
 
@@ -39,32 +38,18 @@ module.exports.createUser = (req, res, next) => {
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-  let userId;
 
-  User.findOne({ email }).select('+password')
+  return User.findUserByCredentials(email, password)
     .then((user) => {
-      if (!user) {
-        return Promise.reject(new UnauthorizedError('Неправильные почта или пароль'));
-      }
-
-      userId = user._id;
-
-      return bcrypt.compare(password, user.password);
-    })
-    .then((matched) => {
-      if (!matched) {
-        return Promise.reject(new UnauthorizedError('Неправильные почта или пароль'));
-      }
-
-      const token = jwt.sign({ _id: userId }, 'secretKey', { expiresIn: '7d' });
-
-      return res.status(200).send({ _id: token });
+      res.send({
+        token: jwt.sign({ _id: user._id }, 'secretKey', { expiresIn: '7d' }),
+      });
     })
     .catch(next);
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
-  const { id } = req.headers;
+  const { id } = req.user;
 
   User.findById(id)
     .then((user) => {
