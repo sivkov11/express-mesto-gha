@@ -1,9 +1,7 @@
 const Card = require('../models/card');
-// const ConflictError = require('../errors/conflict-error'); // 409
-const InaccurateDataError = require('../errors/inaccurate-data-error'); // 400
-const NotFoundError = require('../errors/not-found-error'); // 404
-// const UnauthorizedError = require('../errors/unauthorized-error'); // 401
-const ForbiddenError = require('../errors/forbidden-error'); // 403
+const InaccurateDataError = require('../errors/inaccurate-data-error');
+const NotFoundError = require('../errors/not-found-error');
+const ForbiddenError = require('../errors/forbidden-error');
 
 module.exports.getCards = (req, res) => {
   Card.find({})
@@ -27,15 +25,17 @@ module.exports.createCard = (req, res, next) => {
 module.exports.deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
     .then((card) => {
-      if (card == null) {
-        next(new NotFoundError('Картачка не найдена'));
-      }
-      if (!(card.owner._id.toString() === req.user._id)) {
+      if (card === null) {
+        next(new NotFoundError('Карточка не найдена.'));
+      } if (card.owner._id.toString() === req.user._id) {
+        Card.deleteOne()
+          .then(() => {
+            res.send({ data: card });
+          });
+      } else {
         next(new ForbiddenError('Это чужая карточка'));
       }
-      return Card.findByIdAndRemove(req.params.cardId)
-        .then((cardDelete) => res.send({ data: cardDelete }));
-    }).catch(next);
+    });
 };
 
 module.exports.likeCard = (req, res, next) => {
