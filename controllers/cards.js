@@ -26,15 +26,15 @@ module.exports.createCard = (req, res, next) => {
 
 module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
-  const ownerId = req.user._id;
+  const { _id } = req.user
 
   Card.findById(cardId)
     .then((card) => {
       if (card === null) {
-        throw new NotFoundError('Картачка не найдена');
+        next(new NotFoundError('Картачка не найдена'));
       }
-      if (card.owner.toString() !== ownerId) {
-        throw new ForbiddenError();
+      if (card.owner._id.toString() !== _id) {
+        next(new ForbiddenError('Это чужая карточка'));
       }
       return card;
     })
