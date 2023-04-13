@@ -8,6 +8,7 @@ const {
 const ConflictError = require('../errors/conflict-error');
 const InaccurateDataError = require('../errors/inaccurate-data-error');
 const NotFoundError = require('../errors/not-found-error');
+const UnauthorizedError = require('../errors/unauthorized-error');
 
 module.exports.createUser = (req, res, next) => {
   const {
@@ -44,6 +45,7 @@ module.exports.login = (req, res, next) => {
       res.send({
         token: jwt.sign({ _id: user._id }, 'secretKey', { expiresIn: '7d' }),
       });
+      return next(new UnauthorizedError('Необходима авторизация'));
     })
     .catch(next);
 };
