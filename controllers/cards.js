@@ -31,7 +31,7 @@ module.exports.deleteCard = (req, res, next) => {
   Card.findById(cardId)
     .then((card) => {
       if (card === null) {
-        next(new NotFoundError('Картачка не найдена'));
+        next(new NotFoundError('Картачка не найдена1'));
       }
       if (card.owner._id.toString() !== _id) {
         next(new ForbiddenError('Это чужая карточка'));
@@ -42,7 +42,7 @@ module.exports.deleteCard = (req, res, next) => {
     .then((card) => res.status(200).send({ card }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new NotFoundError('Картачка не найдена'));
+        next(new NotFoundError('Картачка не найдена2'));
         return;
       }
       next(err);
