@@ -85,20 +85,18 @@ module.exports.getUserId = (req, res, next) => {
     });
 };
 
-module.exports.updateUser = (req, res) => {
-  const { userId } = req.user._id;
+module.exports.updateUser = (req, res, next) => {
+  const { _id } = req.user;
   const { name, about } = req.body;
 
-  User.findByIdAndUpdate(userId, { name, about }, {
+  User.findByIdAndUpdate(_id, { name, about }, {
     new: true,
     runValidators: true,
   })
-    .then((user) => res.status(200).send({ data: user }))
+    .then((user) => res.status(200).send({ user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(ERROR_400).send({ message: 'Невалидный идентификатор' });
-      } else {
-        res.status(ERROR_500).send({ message: 'Произошла ошибка' });
+        next(new InaccurateDataError('Некорректные данные'));
       }
     });
 };
