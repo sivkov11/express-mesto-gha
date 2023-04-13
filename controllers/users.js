@@ -63,6 +63,16 @@ module.exports.login = (req, res, next) => {
     .catch(next);
 };
 
+module.exports.getCurrentUser = (req, res, next) => {
+  const { id } = req.user._id;
+
+  User.findById(id)
+    .then((user) => {
+      res.status(200).send({ data: user });
+    })
+    .catch(next);
+};
+
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((user) => res.send({ data: user }))
@@ -118,14 +128,4 @@ module.exports.updateAvatar = (req, res) => {
         res.status(ERROR_500).send({ message: 'Произошла ошибка' });
       }
     });
-};
-
-module.exports.getCurrentUser = (req, res, next) => {
-  const { id } = req.user;
-
-  User.findById(id)
-    .then((user) => {
-      res.status(200).send({ data: user });
-    })
-    .catch(next);
 };
