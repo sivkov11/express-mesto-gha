@@ -24,25 +24,20 @@ module.exports.createCard = (req, res, next) => {
     });
 };
 
-module.exports.deleteCard = (req, res, next) => {
+module.exports.deleteCardsById = (req, res, next) => {
   Card.findById(req.params.cardId)
     .then((card) => {
       if (card == null) {
-        next(new NotFoundError('Картачка не найдена'));
+        throw new NotFoundError('Пользователь по указанному _id не найден');
       }
-      if (card.owner._id.toString() !== req.user._id) {
-        next(new ForbiddenError('Это чужая карточка'));
+      if (!(card.owner._id.toString() === req.user._id)) {
+        throw new ForbiddenError('Вы не можете удалить чужую карточку!');
       }
-      return card;
+      return Card.findByIdAndRemove(req.params.cardId)
+        .then((cardDelete) => res.send({ data: cardDelete }))
+        .catch(next);
     })
-    .then((card) => Card.deleteOne(card))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new NotFoundError('Картачка не найдена'));
-        return;
-      }
-      next(err);
-    });
+    .catch(next);
 };
 
 module.exports.likeCard = (req, res, next) => {
