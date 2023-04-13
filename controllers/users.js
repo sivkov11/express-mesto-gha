@@ -21,10 +21,10 @@ module.exports.createUser = (req, res, next) => {
     }))
     .then((user) => res.send({
       _id: user._id,
-      email: user.email,
       name: user.name,
       about: user.about,
       avatar: user.avatar,
+      email: user.email,
     }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -125,7 +125,7 @@ module.exports.getCurrentUser = (req, res, next) => {
 
   User.findById(id)
     .then((user) => {
-      res.status(200).send({ user });
+      res.status(200).send(user);
     })
     .catch(next);
 };
