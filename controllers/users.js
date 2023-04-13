@@ -51,7 +51,7 @@ module.exports.login = (req, res, next) => {
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
-  const { id } = req.user;
+  const { id } = req.user._id;
 
   User.findById(id)
     .then((user) => {
