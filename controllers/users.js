@@ -130,7 +130,6 @@ module.exports.getCurrentUser = (req, res, next) => {
     .catch(next);
 };
 
-
 module.exports.loginUser = (req, res, next) => {
   const { email, password } = req.body;
 
@@ -150,7 +149,7 @@ module.exports.loginUser = (req, res, next) => {
     })
     .then(({ _id: userId }) => {
       if (userId) {
-        const token = jwt.sign({ userId }, 'secretKey', { expiresIn: '7d' },);
+        const token = jwt.sign({ userId }, 'secretKey', { expiresIn: '7d' });
 
         return res.status(200).send({ _id: token });
       }
@@ -158,4 +157,4 @@ module.exports.loginUser = (req, res, next) => {
       throw new UnauthorizedError('Неправильные почта или пароль');
     })
     .catch(next);
-}
+};
