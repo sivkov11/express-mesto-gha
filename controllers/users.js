@@ -64,9 +64,9 @@ module.exports.login = (req, res, next) => {
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
-  const { id } = req.user._id;
+  const { id } = req.user;
 
-  User.findById(id)
+  User.findById(id._id)
     .then((user) => {
       res.status(200).send({ user });
     })
