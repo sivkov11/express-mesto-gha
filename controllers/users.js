@@ -121,11 +121,11 @@ module.exports.updateAvatar = (req, res) => {
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
-  const { id } = req.user;
+  const { userId } = req.user;
 
-  User.findById(id)
+  User.findById(userId)
     .then((user) => {
-      res.status(200).send({ data: user });
+      res.status(200).send({ user });
     })
     .catch(next);
 };
