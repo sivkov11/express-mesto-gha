@@ -121,9 +121,9 @@ module.exports.updateAvatar = (req, res) => {
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
-  const { userId } = req.user;
+  const { id } = req.user._id;
 
-  User.findById(userId)
+  User.findById(id)
     .then((user) => {
       res.status(200).send({ user });
     })
