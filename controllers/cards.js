@@ -25,24 +25,24 @@ module.exports.createCard = (req, res, next) => {
 };
 
 module.exports.deleteCard = (req, res, next) => {
-  Card.findById(req.params._id)
-    .then((card) => {
-      if (card === null) {
-        next(new NotFoundError('Картачка не найдена'));
-      }
-      if (card.owner._id.toString() !== req.user._id) {
-        next(new ForbiddenError('Это чужая карточка'));
-      }
-      return card;
+  const { id: cardId } = req.params;
+  const { userId } = req.user;
+
+  Card
+    .findById({
+      _id: cardId,
     })
-    .then((card) => Card.deleteOne(card))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new NotFoundError('Картачка не найдена'));
-        return;
-      }
-      next(err);
-    });
+    .then((card) => {
+      if (!card) throw new NotFoundError('Данные по указанному id не найдены');
+
+      const { owner: cardOwnerId } = card;
+      if (cardOwnerId.valueOf() !== userId) throw new ForbiddenError('Нет прав доступа');
+
+      card
+        .remove()
+        .then(() => res.status(200).send({ data: card }));
+    })
+    .catch(next);
 };
 
 module.exports.likeCard = (req, res, next) => {
