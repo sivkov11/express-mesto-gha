@@ -23,17 +23,13 @@ module.exports.createUser = (req, res, next) => {
       email,
       password: hash,
     }))
-    .then((user) => {
-      const { _id } = user;
-
-      return res.status(201).send({
-        email,
-        name,
-        about,
-        avatar,
-        _id,
-      });
-    })
+    .then((user) => res.send({
+      _id: user._id,
+      name: user.name,
+      about: user.about,
+      avatar: user.avatar,
+      email: user.email,
+    }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new InaccurateDataError('Некорректные данные'));
@@ -59,9 +55,9 @@ module.exports.login = (req, res, next) => {
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
-  const { id } = req.user;
+  const { _id } = req.user;
 
-  User.findById(id)
+  User.findById(_id)
     .then((user) => {
       res.status(200).send({ user });
     })
