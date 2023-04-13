@@ -4,7 +4,7 @@ const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
 const routeUsers = require('./routes/users');
 const routeCards = require('./routes/cards');
-const { login, createUser } = require('./controllers/users');
+const { loginUser, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/errorHandler');
 const NotFoundError = require('./errors/not-found-error');
@@ -18,7 +18,7 @@ app.post('/signin', celebrate({
     email: Joi.string().email().required(),
     password: Joi.string().required(),
   }),
-}), login);
+}), loginUser);
 
 app.post('/signup', celebrate({
   body: Joi.object().keys({

@@ -121,7 +121,7 @@ module.exports.updateAvatar = (req, res) => {
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
-  const { id } = req.user._id;
+  const { id } = req.user;
 
   User.findById(id)
     .then((user) => {
@@ -129,3 +129,33 @@ module.exports.getCurrentUser = (req, res, next) => {
     })
     .catch(next);
 };
+
+
+module.exports.loginUser = (req, res, next) => {
+  const { email, password } = req.body;
+
+  User
+    .findOne({ email }).select('+password')
+    .then((user) => {
+      if (user) {
+        return bcrypt.compare(password, user.password)
+          .then((matched) => {
+            if (matched) return user;
+
+            return Promise.reject();
+          });
+      }
+
+      return Promise.reject();
+    })
+    .then(({ _id: userId }) => {
+      if (userId) {
+        const token = jwt.sign({ userId }, 'secretKey', { expiresIn: '7d' },);
+
+        return res.status(200).send({ _id: token });
+      }
+
+      throw new UnauthorizedError('Неправильные почта или пароль');
+    })
+    .catch(next);
+}
