@@ -34,7 +34,7 @@ module.exports.deleteCard = (req, res, next) => {
         next(new ForbiddenError('Это чужая карточка'));
       }
       return Card.findByIdAndRemove(req.params.cardId)
-        .then(() => Card.deleteOne({ data: card }));
+        .then((del) => Card.deleteOne({ data: del }));
     }).catch((err) => {
       if (err.name === 'CastError') {
         next(new NotFoundError('Картачка не найдена'));
